@@ -21,6 +21,8 @@
 *.la
 *.a
 *.lib
+# Images
+*.bmp
 
 # Executables
 *.exe
