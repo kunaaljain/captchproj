@@ -73,19 +73,7 @@ void Captcha::gen_random(char *s, const int len)
     }
     s[len] = 0;
     //std::cout << sizeof(alphanum);
-}
-void gen_random(char *s, const int len) {
-    static const char alphanum[] =
-        "0123456789"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz";
-
-    for (int i = 0; i < len; ++i) {
-        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
-    }
-
-    s[len] = 0;
-}
+  }
 
 // This is to change the colour of the appropriate pixles to any colour we want. This creates the text.
 
