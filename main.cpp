@@ -75,6 +75,7 @@ void Captcha::gen_random(char *s, const int len)
     //std::cout << sizeof(alphanum);
 }
 
+
 // This is to change the colour of the appropriate pixles to any colour we want. This creates the text.
 
 void Captcha::captchagen()
