@@ -12,6 +12,7 @@
 #include <random>
 #include <iterator>
 #include <algorithm>
+#include "md5.hpp"
 #include "font.hpp"
 #include "bitmap_image.hpp"
 using namespace std;
@@ -25,13 +26,20 @@ class Captcha{
 		int offset=0,x;
 		string saveFile;
 		Captcha(string _saveFile);
-
+		string str;
+		string hashedString;
+		string captchaString;
+		string userinp;
 		void init();
 		void backgroundgen();
 		void gen_random(char *s, const int len);
 		void captchagen();
 		void ran_noiseadd();
 		void bitsave();
+		void hashString();
+		int verifyCaptcha();
+		void takeinp();
+
 };
 
 // This is to initialize the array.
@@ -86,8 +94,9 @@ void Captcha::captchagen()
 	char _str[6];
 	gen_random(_str,5);
 	_str[5] = 0;
-	std::string str(_str);
-	//std::cout << str;      //for debugging.
+	string str1(_str);
+	//cout << str1;      //for debugging.
+	str.assign(str1);
 	const unsigned int dim = 100;
 	for(unsigned int k=0; k<str.length(); ++k)
 	{
@@ -172,6 +181,33 @@ void Captcha::bitsave()
 	image.save_image(saveFile);
 }
 
+void Captcha::hashString(){
+	string sample(md5(str));
+	//cout<< str;
+	//cout << "fuck";
+	//cout << "hashedString = " + sample + "str = " + str;
+	hashedString.assign(sample);			//assign the hashed string
+	str.clear();							// clear the string for safety
+}
+
+int Captcha::verifyCaptcha(){			//returns 1 if matched 
+	string sample(md5(userinp));					//returns 0 if not matched
+	int y = hashedString.compare(sample);
+	//cout << userinp;
+	//cout << "sample = " + sample + " \n hashedString = " + hashedString; 
+	//cout << "y = " + y;
+	if(y == 0){
+		return 1 ;
+	}
+	else {
+		return 0;
+	}
+}
+
+void Captcha::takeinp(){
+	//string sampleinp;
+	cin >> userinp;
+}
 // This is the main function.
 
 int main()
@@ -182,9 +218,12 @@ int main()
 	//Calling the random noise addition.
 	cap_1.ran_noiseadd();
 	//Calling the Captcha generation function.
-	cap_1.captchagen();	
+	cap_1.captchagen();
 	//This is to save the image.
 	cap_1.bitsave();
+	cap_1.hashString();
+	cap_1.takeinp();
+	cout << cap_1.verifyCaptcha();
 	//End of the function.
 	return 0;
 }
