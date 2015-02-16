@@ -23,8 +23,8 @@ class Captcha{
 		int letters[26][2];
 		bitmap_image image; // (w,h)
 		int offset=0,x;
-
-		Captcha(string saveFile);
+		string saveFile;
+		Captcha(string _saveFile);
 
 		void init();
 		void backgroundgen();
@@ -91,30 +91,36 @@ void Captcha::captchagen()
 	const unsigned int dim = 100;
 	for(unsigned int k=0; k<str.length(); ++k)
 	{
+		// Unalign letters
+		int offsety=rand()%5;
+		int diry=rand()%2;
+		if(diry==1) offsety*=-1;
+	   	
 	   	for (unsigned int y = 0; y < 52; ++y)
 		{
 	      // Use this to get the captcha in blue.
 	      
 	      for (x = letters[str[k]-'a'][0]; x < letters[str[k]-'a'][1]; ++x)
 	    	{
-	    		if(im[y][x]!=' ') image.set_pixel(offset+x-letters[str[k]-'a'][0],y,0,0,205);
+	    		if(im[y][x]!=' ') image.set_pixel(offset+x-letters[str[k]-'a'][0],min(max(0,(int)y+offsety),51),0,0,205);
 	    	}
 
 	    	//srand(time(NULL));
 	    	// Just for fun and lines white lines :D :P
-	    	if(rand()%40 ==1)
+	      if(rand()%40 ==1)
 	    	{
 	    		for (x = letters[str[k]-'a'][0]; x < letters[str[k]-'a'][1]; ++x)
 	    		{
-	    			if(im[y][x]!=' ') image.set_pixel(offset+x-letters[str[k]-'a'][0],y,248,248,255);
+	    			if(im[y][x]!=' ') image.set_pixel(offset+x-letters[str[k]-'a'][0],min(max(0,(int)y+offsety),51),248,248,255);
 	    		}		
-	    	// Hollow Effect
 	    	}
-    			for (x = letters[str[k]-'a'][0]; x < letters[str[k]-'a'][1]; ++x)
-	    		{
-	    			if(im[y][x] =='d' && im[y+1][x+2] =='d') image.set_pixel(offset+x-letters[str[k]-'a'][0],y,248,248,255);
-	    		}
-	    	}	    	
+
+	    	// Hollow Effect
+		  for (x = letters[str[k]-'a'][0]; x < letters[str[k]-'a'][1]; ++x)
+    		{
+    			if(im[y][x] =='d' && im[y+1][x+2] =='d') image.set_pixel(offset+x-letters[str[k]-'a'][0],min(max(0,(int)y+offsety),51),248,248,255);
+    		}
+	    }	    	
 
 	   offset = offset + letters[str[k]-'a'][1] - letters[str[k] - 'a'][0] - 15;
 	}
@@ -156,14 +162,14 @@ void Captcha::ran_noiseadd()
 
 // This is to save the Bitmap image.
 
-Captcha::Captcha(string saveFile): image(180,52)
+Captcha::Captcha(string _saveFile): image(180,52)
 {
-	
+	saveFile=_saveFile;
 }	
 
 void Captcha::bitsave()
 {
-	image.save_image("image.bmp");
+	image.save_image(saveFile);
 }
 
 // This is the main function.
